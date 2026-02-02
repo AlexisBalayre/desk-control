@@ -1,0 +1,15 @@
+[project]
+name = "desk-control"
+version = "1.0.0"
+description = "BLE control library for AOKE-based standing desks (Ergomate / Aum World)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bleak>=2.1.1",
+]
+
+[tool.setuptools]
+py-modules = ["desk"]
+
+[project.scripts]
+desk = "desk:cli"
