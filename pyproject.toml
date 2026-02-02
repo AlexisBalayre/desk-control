@@ -1,5 +1,8 @@
 [project]
 name = "desk-control"
+authors = [
+    {name = "Alexis Balayre", email = "alexis@balayre.com"}
+]
 version = "1.0.0"
 description = "BLE control library for AOKE-based standing desks (Ergomate / Aum World)"
 readme = "README.md"
