@@ -14,5 +14,8 @@ dependencies = [
 [tool.setuptools]
 py-modules = ["desk"]
 
+[tool.setuptools.data-files]
+"." = ["config.toml"]
+
 [project.scripts]
 desk = "desk:cli"

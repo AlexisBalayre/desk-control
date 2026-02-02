@@ -43,13 +43,10 @@ def build_move_packet(target_mm: int) -> bytes:
 
 async def scan(timeout: float = 5.0) -> list[str]:
     """Scan for desks advertising the ff00 service. Returns list of BLE addresses."""
-    devices = await BleakScanner.discover(timeout=timeout)
-    results = []
-    for d in devices:
-        uuids = d.metadata.get("uuids", [])
-        if any(SERVICE_UUID.lower() in u.lower() for u in uuids):
-            results.append(d.address)
-    return results
+    devices = await BleakScanner.discover(
+        timeout=timeout, service_uuids=[SERVICE_UUID]
+    )
+    return [d.address for d in devices]
 
 
 class Desk:
@@ -131,21 +128,19 @@ async def connect(address: str, *, timeout: float = 25.0):
 
 CONFIG_DIR = Path.home() / ".config" / "desk-control"
 CONFIG_FILE = CONFIG_DIR / "config.toml"
-
-FALLBACK_ADDRESS = ""
-FALLBACK_SIT_CM = 73.0
-FALLBACK_STAND_CM = 105.0
+BUNDLED_CONFIG = Path(__file__).parent / "config.toml"
 
 
 def _load_config() -> dict:
-    """Load config from ~/.config/desk-control/config.toml."""
-    if not CONFIG_FILE.exists():
-        return {}
-    try:
-        import tomllib
-        return tomllib.loads(CONFIG_FILE.read_text())
-    except Exception:
-        return {}
+    """Load user config, falling back to the bundled config shipped with the repo."""
+    for path in (CONFIG_FILE, BUNDLED_CONFIG):
+        if path.exists():
+            try:
+                import tomllib
+                return tomllib.loads(path.read_text())
+            except Exception:
+                continue
+    return {}
 
 
 def _save_config(cfg: dict):
@@ -164,9 +159,9 @@ def _get_config():
     """Return (address, sit_cm, stand_cm) from config file."""
     cfg = _load_config()
     return (
-        cfg.get("address", FALLBACK_ADDRESS),
-        cfg.get("sit_cm", FALLBACK_SIT_CM),
-        cfg.get("stand_cm", FALLBACK_STAND_CM),
+        cfg.get("address", ""),
+        cfg.get("sit_cm", 73.0),
+        cfg.get("stand_cm", 105.0),
     )
 
 

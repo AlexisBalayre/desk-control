@@ -20,13 +20,15 @@ uv tool install .
 
 ## Setup
 
-Run the interactive setup to find your desk and save your preferences:
+The repo ships with a default `config.toml` containing a pre-configured desk address and sit/stand heights. If you share the same desk, it works out of the box.
+
+To configure your own desk, run the interactive setup:
 
 ```sh
 desk setup
 ```
 
-This scans for nearby desks over BLE, lets you select one, and configure your sit/stand heights. Config is saved to `~/.config/desk-control/config.toml`.
+This scans for nearby desks over BLE, lets you select one, and configure your sit/stand heights. Your config is saved to `~/.config/desk-control/config.toml` and takes priority over the bundled defaults.
 
 ## Usage
 
